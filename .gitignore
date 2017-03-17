@@ -3,3 +3,7 @@
 .RData
 .Ruserdata
 ^man/
+vignettes/*.pdf
+vignettes/*.aux
+vignettes/*.log
+vignettes/*.tex
