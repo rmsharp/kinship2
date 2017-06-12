@@ -271,10 +271,12 @@ Now, paste the parts together into a basic pedigree.
 The fields for father and mother are not the identifiers of
 the parents, but their row number in the structure.
 <<pedigree - create>>=
-if (missing(famid))
+if (missing(famid)) {
     temp <- list(id = id, findex = findex, mindex = mindex, sex = sex)
-else temp <- list(famid = famid, id = oldid, findex = findex, mindex = mindex,
+} else {
+  temp <- list(famid = famid, id = oldid, findex = findex, mindex = mindex,
                  sex = sex)
+}
 @
 
 The last part is to check out the optional features,
