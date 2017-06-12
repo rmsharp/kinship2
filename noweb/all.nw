@@ -14,6 +14,7 @@
 \author{Terry Therneau and Elizabeth Atkinson}
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 \maketitle
 \tableofcontents
 \section{Introduction}
