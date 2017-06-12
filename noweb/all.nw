@@ -121,9 +121,9 @@ if (min(sex) == 0) {
   sex <- sex + 1
 }
 sex <- ifelse(sex < 1 | sex > 4, 3, sex)
-if (all(sex > 2))
-        stop("Invalid values for 'sex'")
-    else if (mean(sex == 3) > 0.25)
+if (all(sex > 2)) {
+  stop("Invalid values for 'sex'")
+} else if (mean(sex == 3) > 0.25)
     	warning("More than 25% of the gender values are 'unknown'")
 sex <- factor(sex, 1:4, labels = codes)
 @
@@ -238,22 +238,22 @@ if (any(mindex == 0 & !nomother)) {
                paste(who[msg.n], collapse =  " ")))
     }
 
-if (any(mindex == 0 & findex!= 0) || any(mindex!= 0 & findex == 0)) {
-    who <- id[which((mindex == 0 & findex!= 0) |(mindex!= 0 & findex == 0))]
+if (any(mindex == 0 & findex != 0) || any(mindex != 0 & findex == 0)) {
+    who <- id[which((mindex == 0 & findex != 0) | (mindex != 0 & findex == 0))]
     msg.n <- 1:min(5, length(who))  #Don't list a zillion
     stop(paste("Subjects must have both a father and mother, or have neither",
                paste(who[msg.n], collapse =  " ")))
 }
 
 if (!missing(famid)) {
-    if (any(famid[mindex] !=  famid[mindex>0])) {
-        who <- (id[mindex>0])[famid[mindex] !=  famid[mindex>0]]
+    if (any(famid[mindex] !=  famid[mindex > 0])) {
+        who <- (id[mindex > 0])[famid[mindex] !=  famid[mindex > 0]]
         msg.n <- 1:min(5, length(who))
         stop(paste("Mother's family !=  subject's family",
                    paste(who[msg.n], collapse = " ")))
         }
-    if (any(famid[findex] !=  famid[findex>0])) {
-        who <- (id[findex>0])[famid[findex] !=  famid[findex>0]]
+    if (any(famid[findex] !=  famid[findex > 0])) {
+        who <- (id[findex > 0])[famid[findex] !=  famid[findex > 0]]
         msg.n <- 1:min(5, length(who))
         stop(paste("Father's family !=  subject's family",
                    paste(who[msg.n], collapse = " ")))
@@ -513,7 +513,7 @@ selected.
     if (!is.null(x$relation)) {
       indx1 <- match(x$relation$indx1, i, nomatch = 0)
       indx2 <- match(x$relation$indx2, i, nomatch = 0)
-      keep <- (indx1 >0 & indx2 >0)  #keep only if both id's are kept
+      keep <- (indx1 > 0 & indx2 > 0)  #keep only if both id's are kept
       if (any(keep)) {
         z$relation <- x$relation[keep, , drop = FALSE]
         z$relation$indx1 <- indx1[keep]
@@ -526,7 +526,7 @@ selected.
         if (!is.null(x$hints$spouse)) {
             indx1 <- match(x$hints$spouse[, 1], i, nomatch = 0)
             indx2 <- match(x$hints$spouse[, 2], i, nomatch = 0)
-            keep <- (indx1 >0 & indx2 >0)  #keep only if both id's are kept
+            keep <- (indx1 > 0 & indx2 > 0)  #keep only if both id's are kept
             if (any(keep))
                 temp$spouse <- cbind(indx1[keep], indx2[keep],
                                      x$hints$spouse[keep, 3])
@@ -534,7 +534,7 @@ selected.
         z$hints <- temp
         }
 
-    if (any(z$findex == 0 & z$mindex>0) | any(z$findex>0 & z$mindex == 0))
+    if (any(z$findex == 0 & z$mindex > 0) | any(z$findex > 0 & z$mindex == 0))
         stop("A subpedigree cannot choose only one parent of a subject")
     class(z) <- 'pedigree'
     z
@@ -561,8 +561,8 @@ file that it is an S3 method.
 as.data.frame.pedigree <- function(x, ...) {
 
   dadid <- momid <- rep(0, length(x$id))
-  dadid[x$findex>0] <- x$id[x$findex]
-  momid[x$mindex>0] <- x$id[x$mindex]
+  dadid[x$findex > 0] <- x$id[x$findex]
+  momid[x$mindex > 0] <- x$id[x$mindex]
   df <- data.frame(id = x$id, dadid = dadid, momid = momid, sex = x$sex)
 
   if (!is.null(x$affected))
@@ -758,7 +758,7 @@ kinship.default <- function(id, dadid, momid, sex, chrtype = "autosome", ...) {
             return(matrix(ifelse(sex > 2, sex / 2, NA), 1, 1, dimnames = list(id, id)))
 
         # kmat <- diag(c((3 - sex)/2, 0)) #founders
-        kmat <- diag(ifelse(sex>2, NA, c((3 - sex)/2, 0)))
+        kmat <- diag(ifelse(sex > 2, NA, c((3 - sex)/2, 0)))
         mrow <- match(momid, id, nomatch = n + 1) #row number of the mother
         drow <- match(dadid, id, nomatch = n + 1) #row number of the dad
 
@@ -935,7 +935,7 @@ makekinship <- function(famid, id, father.id, mother.id, unrelated = 0) {
     if (any(is.na(famid)))  stop("One or more subjects with missing family id")
     if (any(is.na(id)))     stop("One or more subjects with a missing id")
     if (is.numeric(famid)) {
-        if (any(famid < 0))      stop("Invalid family id, must be >0")
+        if (any(famid < 0))      stop("Invalid family id, must be > 0")
         }
 
     if (any(duplicated(id))) stop("Subject ids must be unique")
@@ -967,7 +967,7 @@ makekinship <- function(famid, id, father.id, mother.id, unrelated = 0) {
 	idlist[seq(to = cumcount[i], length = counts[i])] <- id[who]
 	}
 
-    if (nzero>0) mlist <- c(list(Diagonal(nzero)), mlist)
+    if (nzero > 0) mlist <- c(list(Diagonal(nzero)), mlist)
     kmat <- forceSymmetric(bdiag(mlist))
     dimnames(kmat) <- list(idlist, idlist)
     kmat
@@ -1276,7 +1276,7 @@ as the case may be), then move all the monozygotes to the
 left, then move the subject himself to the left.
 <<autohint - shift>>=
 shift <- function(id, sibs, goleft, hint, twinrel, twinset) {
-    if (twinset[id]> 0)  {
+    if (twinset[id] >  0)  {
         shift.amt <- 1 + diff(range(hint[sibs]))  # enough to avoid overlap
         twins <- sibs[twinset[sibs] == twinset[id]]
         if (goleft)
@@ -1338,7 +1338,7 @@ for (i in unique(depth)) {
     if (any(who)) horder[who] <- 1:sum(who) #screwy input - overwrite it
     }
 
-if (any(twinset>0)) {
+if (any(twinset > 0)) {
     # First, make any set of twins a cluster: 6.01, 6.02, ...
     #  By using fractions, I don't have to worry about other sib's values
     for (i in unique(twinset)) {
@@ -1432,18 +1432,18 @@ for (lev in 1:maxlev) {
         for (j in 1:2) {
             direction <- c(FALSE, TRUE)[j]
             mypos <- dpairs[i, j]
-            if (plist$fam[lev, mypos] >0) {
+            if (plist$fam[lev, mypos] > 0) {
                 # Am connected to parents at this location
                 anchor[j] <- 1  #familial anchor
                 sibs <- idlist[findsibs(mypos, plist, lev)]
-                if (length(sibs) >1)
+                if (length(sibs) > 1)
                     horder <- shift(idlist[mypos], sibs, direction,
                                     horder, twinrel, twinset)
                 }
             else {
                 #spouse at this location connected to parents ?
                 spouse[j] <- findspouse(mypos, plist, lev, ped)
-                if (plist$fam[lev, spouse[j]] >0) { # Yes they are
+                if (plist$fam[lev, spouse[j]] > 0) { # Yes they are
                     anchor[j] <- 2  #spousal anchor
                     sibs <- idlist[findsibs(spouse[j], plist, lev)]
                     if (length(sibs) > 1)
@@ -1590,7 +1590,7 @@ duporder <- function(idlist, plist, lev, ped) {
     # families touch?
     famtouch <- logical(npair)
     for (i in 1:npair) {
-        if (plist$fam[lev, dmat[i, 1]] >0)
+        if (plist$fam[lev, dmat[i, 1]] > 0)
              sib1 <- max(findsibs(dmat[i, 1], plist, lev))
         else {
             spouse <- findspouse(dmat[i, 1], plist, lev, ped)
@@ -1599,7 +1599,7 @@ duporder <- function(idlist, plist, lev, ped) {
             sib1 <- max(findsibs(spouse, plist, lev))
             }
 
-        if (plist$fam[lev, dmat[i, 2]] >0)
+        if (plist$fam[lev, dmat[i, 2]] > 0)
             sib2 <- min(findsibs(dmat[i, 2], plist, lev))
         else {
             spouse <- findspouse(dmat[i, 2], plist, lev, ped)
@@ -1626,7 +1626,7 @@ arrays and returns a position.
 <<autohint - find>>=
 findspouse <- function(mypos, plist, lev, ped) {
     lpos <- mypos
-    while (lpos >1 && plist$spouse[lev, lpos - 1]) lpos <- lpos - 1
+    while (lpos > 1 && plist$spouse[lev, lpos - 1]) lpos <- lpos - 1
     rpos <- mypos
     while(plist$spouse[lev, rpos]) rpos <- rpos + 1
     if (rpos == lpos) stop("autohint bug 3")
@@ -1742,7 +1742,7 @@ easier for the code.
 <<align - setup>>=
 n <- length(ped$id)
 dad <- ped$findex; mom <- ped$mindex  #save typing
-if (any(dad == 0 & mom>0) || any(dad>0 & mom == 0))
+if (any(dad == 0 & mom > 0) || any(dad > 0 & mom == 0))
         stop("Everyone must have 0 parents or 2 parents, not just one")
 level <- 1 + kindepth(ped, align = TRUE)
 
@@ -1770,9 +1770,9 @@ if (!is.null(relation) && any(relation[, 3] == 4)) {
                                           trel[, 2],
                                           0, 0))
     }
-if (any(dad>0 & mom>0) ) {
+if (any(dad > 0 & mom > 0) ) {
     # add parents
-    who <- which(dad>0 & mom>0)
+    who <- which(dad > 0 & mom > 0)
     spouselist <- rbind(spouselist, cbind(dad[who], mom[who], 0, 0))
     }
 
@@ -1805,7 +1805,7 @@ founders <- founders[order(horder[founders])]  #use the hints to order them
 rval <- alignped1(founders[1], dad, mom, level, horder,
     	              packed = packed, spouselist = spouselist)
 
-if (length(founders)>1) {
+if (length(founders) > 1) {
     spouselist <- rval$spouselist
     for (i in 2:length(founders)) {
         rval2 <- alignped1(founders[i], dad, mom,
@@ -1843,13 +1843,13 @@ ancestor <- function(me, momid, dadid) {
     alist <- me
     repeat {
         newlist <- c(alist, momid[alist], dadid[alist])
-        newlist <- sort(unique(newlist[newlist>0]))
+        newlist <- sort(unique(newlist[newlist > 0]))
         if (length(newlist) == length(alist)) break
         alist <- newlist
         }
     alist[alist!= me]
     }
-for (i in (1:length(spouse))[spouse>0]) {
+for (i in (1:length(spouse))[spouse > 0]) {
     a1 <- ancestor(nid[i], mom, dad)
     a2 <- ancestor(nid[i + maxdepth], mom, dad)  #matrices are in column order
     if (any(duplicated(c(a1, a2)))) spouse[i] <- 2
@@ -1891,8 +1891,8 @@ pretty, now we fix that.
 Note that alignped4 wants a T/F spouse matrix: it doesn't care
   about your degree of relationship to the spouse.
 <<align - finish>>=
-if ((is.numeric(align) || align) && max(level) >1)
-    pos <- alignped4(rval, spouse>0, level, width, align)
+if ((is.numeric(align) || align) && max(level) > 1)
+    pos <- alignped4(rval, spouse > 0, level, width, align)
 else pos <- rval$pos
 
 if (is.null(twins))
@@ -2001,7 +2001,7 @@ right.
 The majority of marriages will be undetermined singletons, for which
 nleft will be 1 for female (put my husband to the left) and 0 for male.
 In one bug found by plotting canine data, lspouse could initially be empty but
-length(rspouse)> 1. This caused nleft>length(indx). A fix was to not let
+length(rspouse) > 1. This caused nleft > length(indx). A fix was to not let
 indx to be indexed beyond its length, fix by JPS 5/2013.
 
 <<alignped1>>=
@@ -2012,7 +2012,7 @@ indx to be indexed beyond its length, fix by JPS 5/2013.
         indx <- which(spouselist[sprows, 3] == 0)
         nleft <- floor((length(sprows) + (sex == 2))/2) #total number to left
         nleft <- nleft - length(lspouse)  #number of undecideds to the left
-        if (nleft >0) {
+        if (nleft > 0) {
             # JPS fixed 5/2013, don't index when nleft > length(indx)
             lspouse <- c(lspouse, spouse[indx[1:min(nleft, length(indx))]])
             indx <- indx[ - (1:min(nleft, length(indx)))]
@@ -2047,7 +2047,7 @@ trees.
 	    #  via inbreeding two children marry - - - makes the "indx" line
 	    #  below more complicated
 	    temp <- floor(rval1$nid[lev + 1, ])  # cut off the .5's for matching
-	    indx <- (1:length(temp))[match(temp, children, nomatch = 0) >0]
+	    indx <- (1:length(temp))[match(temp, children, nomatch = 0) > 0]
 	    rval1$fam[lev + 1, indx] <- i   #set the kids parentage
 	    if (!packed) {
 		# line the kids up below the parents
@@ -2065,7 +2065,7 @@ trees.
 		    shift <- parmean - kidmean
 		    for (j in (lev + 1):maxlev) {
 			jn <- rval1$n[j]
-			if (jn>0)
+			if (jn > 0)
 			    rval1$pos[j, 1:jn] <- rval1$pos[j, 1:jn] + shift
 			}
 		    }
@@ -2148,7 +2148,7 @@ alignped2 <- function(x, dad, mom, level, horder, packed,
                       spouselist)
     spouselist <- rval$spouselist
 
-    if (length(x) >1) {
+    if (length(x) > 1) {
 	mylev <- level[x[1]]
 	for (i in 2:length(x)) {
 	    rval2 <- alignped1(x[i], dad, mom, level,
@@ -2181,7 +2181,7 @@ Beyond that the work is simple bookkeeping.
 alignped3 <- function(x1, x2, packed, space = 1) {
     maxcol <- max(x1$n + x2$n)
     maxlev <- length(x1$n)
-    n1 <- max(x1$n)   # These are always >1
+    n1 <- max(x1$n)   # These are always > 1
     n <- x1$n + x2$n
 
     nid <- matrix(0, maxlev, maxcol)
@@ -2220,7 +2220,7 @@ slide <- 0
 for (i in 1:maxlev) {
     n1 <- x1$n[i]
     n2 <- x2$n[i]
-    if (n1 >0 & n2 >0) {
+    if (n1 > 0 & n2 > 0) {
 	if (nid[i, n1] == x2$nid[i, 1])
 		temp <- pos[i, n1] - x2$pos[i, 1]
 	else    temp <- space + pos[i, n1] - x2$pos[i, 1]
@@ -2253,15 +2253,15 @@ Start at the top level and work down.
 for (i in 1:maxlev) {
     n1 <- x1$n[i]
     n2 <- x2$n[i]
-    if (n2 >0) {   # If anything needs to be done for this row...
-        if (n1>0 && (nid[i, n1] == floor(x2$nid[i, 1]))) {
+    if (n2 > 0) {   # If anything needs to be done for this row...
+        if (n1 > 0 && (nid[i, n1] == floor(x2$nid[i, 1]))) {
             #two subjects overlap
             overlap <- 1
             fam[i, n1] <- max(fam[i, n1], fam2[i, 1])
             nid[i, n1] <- max(nid[i, n1], x2$nid[i, 1]) #preserve a ".5"
             if (!packed) {
-                if (fam2[i, 1]>0)
-                    if (fam[i, n1]>0)
+                if (fam2[i, 1] > 0)
+                    if (fam[i, n1] > 0)
                         pos[i, n1] <- (x2$pos[i, 1] + pos[i, n1] + slide)/2
                     else pos[i, n1] <- x2$pos[i, 1] + slide
                     }
@@ -2342,11 +2342,11 @@ alignped4 <- function(rval, spouse, level, width, align) {
     n <- sum(rval$n)  # total number of subjects
     myid <- matrix(0, maxlev, ncol(rval$nid))  #number the plotting points
     for (i in 1:maxlev) {
-        myid[i, rval$nid[i, ]>0] <- cumsum(c(0, rval$n))[i] + 1:rval$n[i]
+        myid[i, rval$nid[i, ] > 0] <- cumsum(c(0, rval$n))[i] + 1:rval$n[i]
         }
 
     # There will be one penalty for each spouse and one for each child
-    npenal <- sum(spouse[rval$nid>0]) + sum(rval$fam >0)
+    npenal <- sum(spouse[rval$nid > 0]) + sum(rval$fam > 0)
     pmat <- matrix(0., nrow = npenal + 1, ncol = n)
 
     indx <- 0
@@ -2389,7 +2389,7 @@ must be $\le$ the max width.
     dvec <- rep(1., ncon)
     for (lev in 1:maxlev) {
 	nn <- rval$n[lev]
-	if (nn>1) {
+	if (nn > 1) {
             for (i in 1:(nn - 1))
                 cmat[coff + i, myid[lev, i + 0:1]] <- c( - 1, 1)
             }
@@ -2409,8 +2409,8 @@ must be $\le$ the max width.
 
     newpos <- rval$pos
     #fit <- lsei(pmat, rep(0, nrow(pmat)), G = cmat, H = dvec)
-    #newpos[myid>0] <- fit$X[myid]
-    newpos[myid>0] <- fit$solution[myid]
+    #newpos[myid > 0] <- fit$X[myid]
+    newpos[myid > 0] <- fit$solution[myid]
     newpos
     }
 @
@@ -2538,7 +2538,7 @@ These locations will be at the top center of each plotted symbol.
 <<pedplot - subregion>>
 plist <- align.pedigree(x, packed = packed, width = width, align = align)
 if (!missing(subregion)) plist <- subregion2(plist, subregion)
-xrange <- range(plist$pos[plist$nid >0])
+xrange <- range(plist$pos[plist$nid > 0])
 maxlev <- nrow(plist$pos)
 @
 
@@ -2622,8 +2622,8 @@ Now draw in the connections one by one. First those between spouses.
 maxcol <- ncol(plist$nid)  #all have the same size
 for (i in 1:maxlev) {
     tempy <- i + boxh/2
-    if (any(plist$spouse[i, ]>0)) {
-        temp <- (1:maxcol)[plist$spouse[i, ]>0]
+    if (any(plist$spouse[i, ] > 0)) {
+        temp <- (1:maxcol)[plist$spouse[i, ] > 0]
         segments(plist$pos[i, temp] + boxw/2, rep(tempy, length(temp)),
     	     plist$pos[i, temp + 1] - boxw/2, rep(tempy, length(temp)))
 
@@ -2723,9 +2723,9 @@ arcconnect <- function(x, y) {
     }
 
 uid <- unique(plist$nid)
-for (id in uid[uid>0]) {
+for (id in uid[uid > 0]) {
     indx <- which(plist$nid == id)
-    if (length(indx) >1) {   #subject is a multiple
+    if (length(indx) > 1) {   #subject is a multiple
         tx <- plist$pos[indx]
         ty <- ((row(plist$pos))[indx])[order(tx)]
         tx <- sort(tx)
@@ -2746,7 +2746,7 @@ Last, we give a list of the plot positions for each subject.  Someone
 who is plotted twice will have their first position listed.
 <<pedplot - finish>>=
 ckall <- x$id[is.na(match(x$id, x$id[plist$nid]))]
-if (length(ckall>0)) cat('Did not plot the following people:', ckall, '\n')
+if (length(ckall > 0)) cat('Did not plot the following people:', ckall, '\n')
 
 if (!keep.par) par(oldpar)
 
@@ -2842,7 +2842,7 @@ Equation \ref{eq:z} will lead to a division by zero if the ray from the
 origin does not intersect a side, e.g., a vertical divider will be parallel
 to the sides of a square symbol.  The only solutions we want have
 $0 \le z \le 1$ and are in the `forward' part of the ray.  This latter  %'`
-is true if the inner product $x \cos(\theta) + y \sin(\theta) >0$.
+is true if the inner product $x \cos(\theta) + y \sin(\theta) > 0$.
 Exactly one of the polygon sides will satisfy both conditions.
 
 <<pedplot - polyfun>>=
@@ -2866,7 +2866,7 @@ polyfun <- function(nslice, object) {
         tx <- zmat[, 1] + z * zmat[, 2]
         ty <- zmat[, 3] + z * zmat[, 4]
         inner <- tx * cos(theta[i]) + ty * sin(theta[i])
-        indx <- which(is.finite(z) & z>= 0 &  z<= 1 & inner >0)
+        indx <- which(is.finite(z) & z >= 0 &  z <= 1 & inner > 0)
         x[i] <- tx[indx]
         y[i] <- ty[indx]
         }
@@ -3258,7 +3258,7 @@ pedigree.shrink <- function(ped, avail, affected = NULL, seed = NULL, maxBits = 
   ## Next trim any available terminal subjects with unknown phenotype
   ## but only if both parents are available
 
-  ## added nNew>0 check because no need to trim anymore if empty ped
+  ## added nNew > 0 check because no need to trim anymore if empty ped
 
   nChange <- 1
   idList$noninform = NULL
@@ -3401,7 +3401,7 @@ pedigree.trim <- function(removeID, ped) {
     stop("Must be a pegigree object.\n")
 
   rmidx <- match(removeID, ped$id)
-  if (length(rmidx)>0) {
+  if (length(rmidx) > 0) {
     pedtrimmed <- ped[ - rmidx]
     return(pedtrimmed)
   } else {
@@ -3555,14 +3555,14 @@ excludeUnavailFounders <- function(id, father, mother, avail)
     skip <- NULL
 
     if (any(nmarr.dad > 1)) {
-      ## Dads in >1 marriage
+      ## Dads in > 1 marriage
       ckdad <- which(as.logical(match(dad,
                       names(nmarr.dad)[which(nmarr.dad > 1)], nomatch = FALSE)))
       skip <- unique(c(skip, ckdad))
     }
 
     if (any(nmarr.mom > 1)) {
-      ## Moms in >1 marriage
+      ## Moms in > 1 marriage
       ckmom <- which(as.logical(match(mom,
                       names(nmarr.mom)[which(nmarr.mom > 1)], nomatch = FALSE)))
       skip <- unique(c(skip, ckmom))
@@ -3579,7 +3579,7 @@ excludeUnavailFounders <- function(id, father, mother, avail)
 
     n <- sum(zed)
     idTrimmed <- NULL
-    if (n>0)
+    if (n > 0)
       {
 
         # dad and mom are the parents of sibships of size 1
@@ -3822,8 +3822,8 @@ is.parent <- function(id, findex, mindex) {
   # assume input of father/mother indices, not ids
 
   father <- mother <- rep(0, length(id))
-  father[findex>0] <- id[findex]
-  mother[mindex>0] <- id[mindex]
+  father[findex > 0] <- id[findex]
+  mother[mindex > 0] <- id[mindex]
 
   isFather <- !is.na(match(id, unique(father[father!= 0])))
   isMother <- !is.na(match(id, unique(mother[mother!= 0])))
@@ -4186,7 +4186,7 @@ kindepth <- function(id, dad.id, mom.id, align = FALSE) {
 	if (i == n)
 	    stop("Impossible pedegree: someone is their own ancestor")
 
-	parents <- which(child>0) #next generation of parents
+	parents <- which(child > 0) #next generation of parents
 	depth[parents] <- i
 	}
     if (!align) return(depth)
@@ -4240,13 +4240,13 @@ The code below, however, says "loop! stay away!".
 	while (length(new) > 1) {
 	    x <- unique(c(x, new))
 	    new <- c(midx[new], didx[new])
-	    new <- new[new>0]
+	    new <- new[new > 0]
 	    }
 	x
 	}
 
-    dads <- didx[midx>0 & didx>0]   # the father side of all spouse pairs
-    moms <- midx[midx>0 & didx>0]
+    dads <- didx[midx > 0 & didx > 0]   # the father side of all spouse pairs
+    moms <- midx[midx > 0 & didx > 0]
     # Get rid of duplicate pairs
     dups <- duplicated(dads + moms * n)
     if (any(dups)) {
@@ -4299,13 +4299,13 @@ The code below, however, says "loop! stay away!".
                     child <- match(midx, parents, nomatch = 0) +
 		             match(didx, parents, nomatch = 0)
                     if (all(child == 0)) break
-                    depth[child>0] <- pmax(i + 1, depth[child>0])
+                    depth[child > 0] <- pmax(i + 1, depth[child > 0])
                     }
                 }
 	    }
 	done[who] <- TRUE
 	}
-    if (all(depth>0)) stop("You found a bug in kindepth's alignment code!")
+    if (all(depth > 0)) stop("You found a bug in kindepth's alignment code!")
     depth
     }
 @
@@ -4364,10 +4364,10 @@ familycheck <- function(famid, id, father.id, mother.id, newfam) {
       }
     else unrelated <- rep(0, nfam)
 
-    splits <- apply(xtab>0, 1, sum)
-    joins <- apply(xtab>0, 2, sum)
+    splits <- apply(xtab > 0, 1, sum)
+    joins <- apply(xtab > 0, 2, sum)
 
-    temp <- apply((xtab>0) * outer(rep(1, nfam), joins - 1), 1, sum)
+    temp <- apply((xtab > 0) * outer(rep(1, nfam), joins - 1), 1, sum)
 
     out <- data.frame(famid = dimnames(xtab)[[1]],
                       n = as.vector(table(famid)),
@@ -4375,9 +4375,9 @@ familycheck <- function(famid, id, father.id, mother.id, newfam) {
                       split = as.vector(splits),
                       join = temp,
                       row.names = 1:nfam)
-    if (any(joins >1)) {
-      tab1 <- xtab[temp>0, ]  #families with multiple outcomes
-      tab1 <- tab1[, apply(tab1>0, 2, sum) >0] #only keep non - zero columns
+    if (any(joins > 1)) {
+      tab1 <- xtab[temp > 0, ]  #families with multiple outcomes
+      tab1 <- tab1[, apply(tab1 > 0, 2, sum) > 0] #only keep non - zero columns
       dimnames(tab1) <- list(dimnames(tab1)[[1]], NULL)
       attr(out, 'join') <- tab1
     }
