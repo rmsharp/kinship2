@@ -450,7 +450,7 @@ Note:
   \item The [[drop]] argument has no meaning for pedigrees, but must to be
     a defined argument of any subscript method; we simply ignore it.
   \item Updating the father/mother is a minor nuisance;
-    since they must are integer indices to rows they must be
+    since they must be integer indices to rows, they must be
     recreated after selection.  Ditto for the relationship matrix.
 \end{enumerate}
 <<pedigree - subscript>>=
